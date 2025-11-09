@@ -17,7 +17,6 @@ body {
   min-height: 100vh;
   padding: 40px 15px;
   position: relative;
-  box-sizing: border-box;
 }
 
 /* Темный overlay */
@@ -69,7 +68,7 @@ body::before {
 .container {
   max-width: 700px;
   width: 90%;
-  background: rgba(40,40,40,0.95); /* тёмно-серый */
+  background: rgba(40,40,40,0.95); /* темно-серый */
   padding: 30px 25px;
   border-radius: 16px;
   box-shadow: 0 6px 25px rgba(0,0,0,0.3);
@@ -77,13 +76,12 @@ body::before {
   z-index: 2; 
   color: #eee;
   margin: 20px auto;
-  box-sizing: border-box;
 }
 
 /* Заголовок */
 h1 {
   font-family: 'StalkerFont', sans-serif;
-  color: #ffcc00; /* золотистый */
+  color: #ffcc00;
   font-size: 36px;
   text-align: center;
   text-shadow: 2px 2px 6px #000;
@@ -111,27 +109,18 @@ label {
 
 /* Поля для ответов */
 textarea {
-  width: 100%;
-  max-width: 100%;
-  padding: 0.8rem;
+  width: 95%;
+  max-width: 95%;
+  padding: 0.6rem;
   border-radius: 10px;
   border: 1px solid #888;
   background: rgba(80,80,80,0.95); 
   color: #eee;
   font-size: 1rem;
   resize: vertical;
-  min-height: 70px;
+  min-height: 80px;
   display: block;
   margin: 0 auto;
-  box-sizing: border-box;
-  transition: box-shadow 0.3s, transform 0.2s;
-}
-
-/* Эффект при фокусе */
-textarea:focus {
-  outline: none;
-  box-shadow: 0 0 12px rgba(255,204,0,0.6);
-  transform: scale(1.01);
 }
 
 /* Кнопки */
@@ -171,13 +160,12 @@ button:hover {
   white-space: pre-wrap;
   color: #eee;
   border: 1px solid #555;
-  box-sizing: border-box;
 }
 
 /* Адаптив */
 @media (max-width: 600px) {
   button { width: 100%; }
   .music-control input[type="range"] { width: 70px; }
-  h1 { font-size: 28px; letter-spacing: 2px; }
-  textarea { min-height: 60px; }
+  h1 { font-size: 28px; letter-spacing: 4px; }
+  textarea { min-height: 70px; }
 }
