@@ -7,9 +7,12 @@
 </head>
 <body>
 
+  <!-- Эффект тумана -->
+  <div class="fog"></div>
+
   <!-- Музыка -->
   <div class="music-control">
-    <label for="volumeControl" style="color:#eee;">Громкость:</label>
+    <label for="volumeControl">Громкость:</label>
     <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.025">
   </div>
   <audio id="bgMusic" loop>
@@ -21,17 +24,17 @@
 
     <div class="question" data-id="1">
       <label>1. Как вы обычно общаетесь с друзьями?</label>
-      <textarea rows="4"></textarea>
+      <textarea></textarea>
     </div>
 
     <div class="question" data-id="2">
       <label>2. Как вы реагируете на критику?</label>
-      <textarea rows="4"></textarea>
+      <textarea></textarea>
     </div>
 
     <div class="question" data-id="3">
       <label>3. Как вы проводите свободное время?</label>
-      <textarea rows="4"></textarea>
+      <textarea></textarea>
     </div>
 
     <div class="buttons">
