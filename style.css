@@ -1,36 +1,9 @@
-/* Видео фон */
-.video-bg {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 800px;
-  height: 800px;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  overflow: hidden;
-  z-index: 0;
-}
-
-.video-bg video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.video-bg .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(20,20,20,0.5);
-  pointer-events: none;
-}
-
-/* Основной стиль */
+/* Фон с изображением Сталкера */
 body {
   margin: 0;
   font-family: 'Arial', sans-serif;
+  background: url('stalker-background.jpg') no-repeat center center fixed;
+  background-size: cover;
   color: #eee;
   display: flex;
   justify-content: center;
@@ -38,9 +11,39 @@ body {
   min-height: 100vh;
   padding: 40px 15px;
   position: relative;
-  background: #111;
 }
 
+/* Темный overlay для читаемости */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(20,20,20,0.7);
+  z-index: 0;
+}
+
+/* Ползунок музыки */
+.music-control {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: rgba(50,50,50,0.8);
+  padding: 10px 15px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 2;
+}
+
+.music-control input[type="range"] {
+  width: 100px;
+}
+
+/* Основной контейнер */
 .container {
   max-width: 700px;
   width: 100%;
@@ -52,6 +55,7 @@ body {
   z-index: 1;
 }
 
+/* Заголовок */
 h1 {
   text-align: center;
   color: #f0f0f0;
@@ -60,6 +64,7 @@ h1 {
   font-weight: bold;
 }
 
+/* Блок вопросов */
 .question {
   background: rgba(60,60,60,0.8);
   padding: 16px 20px;
@@ -67,6 +72,7 @@ h1 {
   margin-bottom: 16px;
 }
 
+/* Метки вопросов */
 label {
   display: block;
   margin-bottom: 8px;
@@ -75,6 +81,7 @@ label {
   font-size: 15px;
 }
 
+/* Поля для ответов */
 textarea {
   width: 100%;
   padding: 0.6rem;
@@ -87,6 +94,7 @@ textarea {
   min-height: 50px;
 }
 
+/* Кнопки */
 .buttons {
   display: flex;
   gap: 0.8rem;
@@ -112,6 +120,7 @@ button:hover {
   box-shadow: 0 0 12px rgba(255,255,255,0.2);
 }
 
+/* Результат анализа */
 #result {
   margin-top: 20px;
   padding: 16px;
@@ -124,28 +133,13 @@ button:hover {
   border: 1px solid #444;
 }
 
-/* Контролы фон/музыка */
-.controls {
-  margin-top: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-}
-
-.controls label {
-  font-size: 14px;
-  margin-left: 5px;
-}
-
 /* Адаптив */
 @media (max-width: 600px) {
   button {
     width: 100%;
   }
 
-  .video-bg {
-    width: 400px;
-    height: 400px;
+  .music-control input[type="range"] {
+    width: 70px;
   }
 }
