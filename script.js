@@ -6,7 +6,7 @@ const questions = document.querySelectorAll(".question");
 // Музыка
 const bgMusic = document.getElementById("bgMusic");
 const volumeControl = document.getElementById("volumeControl");
-bgMusic.volume = 0.3; // по умолчанию 30%
+bgMusic.volume = 0.05; // по умолчанию 5%
 
 // Включаем музыку после первого клика пользователя
 document.addEventListener("click", () => {
@@ -48,15 +48,15 @@ clearBtn.addEventListener("click", () => {
   resultDiv.innerText = "";
 });
 
+// Отправка на анализ
 submitBtn.addEventListener("click", async () => {
   submitBtn.disabled = true;
   submitBtn.innerText = "Анализируем...";
 
   saveAnswers();
 
-  // Формируем единый текст для GPT
   let combinedText = "";
-  questions.forEach((q, i) => {
+  questions.forEach((q) => {
     const label = q.querySelector("label").innerText;
     const answer = q.querySelector("textarea").value || "не отвечено";
     combinedText += `${label}\nОтвет: ${answer}\n\n`;
