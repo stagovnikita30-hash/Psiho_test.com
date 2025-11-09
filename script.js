@@ -6,14 +6,12 @@ const questions = document.querySelectorAll(".question");
 // Музыка
 const bgMusic = document.getElementById("bgMusic");
 const volumeControl = document.getElementById("volumeControl");
-bgMusic.volume = 0.025; // 2.5%
+bgMusic.volume = 0.025; // по умолчанию 2.5%
 
-// Включаем музыку после первого клика пользователя
 document.addEventListener("click", () => {
   if (bgMusic.paused) bgMusic.play();
 }, { once: true });
 
-// Изменение громкости через ползунок
 volumeControl.addEventListener("input", () => {
   bgMusic.volume = volumeControl.value;
   if (bgMusic.paused) bgMusic.play();
@@ -48,7 +46,6 @@ clearBtn.addEventListener("click", () => {
   resultDiv.innerText = "";
 });
 
-// Отправка на анализ
 submitBtn.addEventListener("click", async () => {
   submitBtn.disabled = true;
   submitBtn.innerText = "Анализируем...";
@@ -56,7 +53,7 @@ submitBtn.addEventListener("click", async () => {
   saveAnswers();
 
   let combinedText = "";
-  questions.forEach((q) => {
+  questions.forEach((q, i) => {
     const label = q.querySelector("label").innerText;
     const answer = q.querySelector("textarea").value || "не отвечено";
     combinedText += `${label}\nОтвет: ${answer}\n\n`;
