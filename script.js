@@ -6,14 +6,18 @@ const questions = document.querySelectorAll(".question");
 // Музыка
 const bgMusic = document.getElementById("bgMusic");
 const volumeControl = document.getElementById("volumeControl");
-bgMusic.volume = 0.025; // по умолчанию 2.5%
 
+// Громкость по умолчанию 2.5%
+bgMusic.volume = 0.025;
+
+// Включаем музыку после первого клика
 document.addEventListener("click", () => {
   if (bgMusic.paused) bgMusic.play();
 }, { once: true });
 
+// Изменение громкости с низкой чувствительностью
 volumeControl.addEventListener("input", () => {
-  bgMusic.volume = volumeControl.value;
+  bgMusic.volume = volumeControl.value / 10;
   if (bgMusic.paused) bgMusic.play();
 });
 
@@ -24,7 +28,7 @@ questions.forEach(q => {
   if (saved) q.querySelector("textarea").value = saved;
 });
 
-// Сохраняем все ответы в localStorage
+// Сохраняем все ответы
 function saveAnswers() {
   questions.forEach(q => {
     const id = q.dataset.id;
@@ -37,7 +41,7 @@ function saveAnswers() {
   });
 }
 
-// Очистка localStorage и полей
+// Очистка
 clearBtn.addEventListener("click", () => {
   questions.forEach(q => q.querySelector("textarea").value = "");
   Object.keys(localStorage).forEach(key => {
@@ -46,6 +50,7 @@ clearBtn.addEventListener("click", () => {
   resultDiv.innerText = "";
 });
 
+// Отправка на анализ
 submitBtn.addEventListener("click", async () => {
   submitBtn.disabled = true;
   submitBtn.innerText = "Анализируем...";
@@ -53,7 +58,7 @@ submitBtn.addEventListener("click", async () => {
   saveAnswers();
 
   let combinedText = "";
-  questions.forEach((q, i) => {
+  questions.forEach(q => {
     const label = q.querySelector("label").innerText;
     const answer = q.querySelector("textarea").value || "не отвечено";
     combinedText += `${label}\nОтвет: ${answer}\n\n`;
@@ -76,4 +81,3 @@ submitBtn.addEventListener("click", async () => {
     submitBtn.innerText = "Анализировать";
   }
 });
-
