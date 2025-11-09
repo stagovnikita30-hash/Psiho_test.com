@@ -8,11 +8,28 @@
 <body>
   <div class="container">
     <h1>Психологический тест</h1>
-    <label for="answer">1. Как вы обычно общаетесь с друзьями?</label>
-    <textarea id="answer" rows="3" style="width:100%;"></textarea>
+
+    <div class="question" data-id="1">
+      <label>1. Как вы обычно общаетесь с друзьями?</label>
+      <textarea rows="3"></textarea>
+    </div>
+
+    <div class="question" data-id="2">
+      <label>2. Как вы реагируете на критику?</label>
+      <textarea rows="3"></textarea>
+    </div>
+
+    <div class="question" data-id="3">
+      <label>3. Как вы проводите свободное время?</label>
+      <textarea rows="3"></textarea>
+    </div>
+
     <button id="submitBtn">Анализировать</button>
+    <button id="clearBtn">Очистить ответы</button>
+
     <div id="result"></div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
