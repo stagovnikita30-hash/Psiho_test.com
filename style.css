@@ -13,7 +13,7 @@ body {
   position: relative;
 }
 
-/* Темный overlay для читаемости */
+/* Темный overlay для читаемости текста */
 body::before {
   content: "";
   position: fixed;
@@ -21,7 +21,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(20,20,20,0.7);
+  background: rgba(20,20,20,0.6); /* немного светлее для большей читаемости */
   z-index: 0;
 }
 
@@ -47,18 +47,20 @@ body::before {
 .container {
   max-width: 700px;
   width: 100%;
-  background: rgba(40,40,40,0.85);
+  background: rgba(245,245,245,0.95); /* светлее для удобного ввода текста */
   padding: 30px 35px;
   border-radius: 16px;
   box-shadow: 0 6px 25px rgba(0,0,0,0.3);
   position: relative;
-  z-index: 1;
+  z-index: 1; 
+  color: #111;
+  margin: 20px auto; /* по центру и с отступом сверху */
 }
 
 /* Заголовок */
 h1 {
   text-align: center;
-  color: #f0f0f0;
+  color: #6b21a8;
   margin-bottom: 25px;
   font-size: 28px;
   font-weight: bold;
@@ -66,7 +68,7 @@ h1 {
 
 /* Блок вопросов */
 .question {
-  background: rgba(60,60,60,0.8);
+  background: rgba(240,240,240,0.9); /* светлее для текста */
   padding: 16px 20px;
   border-radius: 12px;
   margin-bottom: 16px;
@@ -77,7 +79,7 @@ label {
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  color: #ddd;
+  color: #333;
   font-size: 15px;
 }
 
@@ -86,9 +88,9 @@ textarea {
   width: 100%;
   padding: 0.6rem;
   border-radius: 10px;
-  border: 1px solid #555;
-  background: rgba(30,30,30,0.8);
-  color: #eee;
+  border: 1px solid #aaa;
+  background: rgba(255,255,255,0.95);
+  color: #111;
   font-size: 0.95rem;
   resize: vertical;
   min-height: 50px;
@@ -111,26 +113,26 @@ button {
   font-weight: 600;
   cursor: pointer;
   color: #fff;
-  background: #666;
+  background: #6b21a8;
   transition: transform 0.2s, box-shadow 0.3s;
 }
 
 button:hover {
   transform: scale(1.03);
-  box-shadow: 0 0 12px rgba(255,255,255,0.2);
+  box-shadow: 0 0 12px rgba(107,33,168,0.4);
 }
 
 /* Результат анализа */
 #result {
   margin-top: 20px;
   padding: 16px;
-  background: rgba(50,50,50,0.8);
+  background: rgba(245,245,245,0.95); /* светлый для читаемости */
   border-radius: 12px;
   max-height: 350px;
   overflow-y: auto;
   white-space: pre-wrap;
-  color: #eee;
-  border: 1px solid #444;
+  color: #111;
+  border: 1px solid #ccc;
 }
 
 /* Адаптив */
