@@ -21,6 +21,8 @@ const musicList = [
   'stalker-music10.mp3'
 ];
 let musicIndex = 0;
+
+// Первый трек
 bgMusic.src = musicList[musicIndex];
 bgMusic.volume = 0.005; // 0.5%
 
@@ -115,8 +117,20 @@ const backgrounds = [
 ];
 
 let currentBg = 0;
+
+// Поставим первый фон сразу
+document.body.style.backgroundImage = `url('${backgrounds[currentBg]}')`;
+document.body.style.transition = 'background-image 2s ease-in-out';
+
+// Функция смены фона с плавным переходом
 function changeBackground() {
   currentBg = (currentBg + 1) % backgrounds.length;
-  document.body.style.backgroundImage = `url('${backgrounds[currentBg]}')`;
+  const newBg = new Image();
+  newBg.src = backgrounds[currentBg];
+  newBg.onload = () => {
+    document.body.style.backgroundImage = `url('${backgrounds[currentBg]}')`;
+  };
 }
-setInterval(changeBackground, 60000); // смена каждая минута
+
+// Меняем каждые 60 секунд
+setInterval(changeBackground, 60000);
