@@ -5,11 +5,19 @@
   <title>Психологический тест</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/docx@7.3.0/build/index.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#1e1e1e; color:#eee; }
+    .container { max-width:800px; margin:2rem auto; padding:1rem; background:#2b2b2b; border-radius:10px; }
+    .question { margin-bottom:1rem; }
+    textarea { width:100%; min-height:60px; border-radius:5px; padding:0.5rem; }
+    .buttons { margin-top:1rem; }
+    button { margin-right:0.5rem; padding:0.5rem 1rem; border:none; border-radius:5px; cursor:pointer; font-weight:600; }
+    #result { white-space: pre-wrap; background:#1e1e1e; padding:1rem; border-radius:5px; margin-top:1rem; }
+    footer { text-align:center; margin-top:2rem; font-size:0.9rem; color:#aaa; }
+    .music-control { position:fixed; top:10px; left:10px; background:#2b2b2b; padding:0.5rem 1rem; border-radius:10px; }
+  </style>
 </head>
 <body>
-
-  <!-- Эффект тумана -->
-  <div class="fog"></div>
 
   <!-- Музыка -->
   <div class="music-control">
@@ -37,20 +45,206 @@
     </div>
 
     <div class="buttons">
-      <button id="submitBtn">Анализировать</button>
-      <button id="clearBtn">Очистить ответы</button>
+      <button id="submitBtn" style="background:#4caf50;color:#fff;">Анализировать</button>
+      <button id="clearBtn" style="background:#f44336;color:#fff;">Очистить ответы</button>
     </div>
 
     <pre id="result">Результат анализа появится здесь...</pre>
   </div>
 
-  <!-- Футер -->
   <footer class="footer">
     <p>Контакты для связи: <a href="mailto:p.s.i.h.o_t.e.s.t@bk.ru">p.s.i.h.o_t.e.s.t@bk.ru</a></p>
     <p>Все материалы защищены. Копирование и распространение запрещено.</p>
     <p>© P.S.I.H.O.T.E.S.T, 2025</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    // -------------------- DOM элементы --------------------
+    const submitBtn = document.getElementById("submitBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const resultDiv = document.getElementById("result");
+    const questions = document.querySelectorAll(".question");
+
+    // -------------------- МУЗЫКА --------------------
+    const bgMusic = document.getElementById("bgMusic");
+    const volumeControl = document.getElementById("volumeControl");
+    const musicList = [
+      'stalker-music1.mp3','stalker-music2.mp3','stalker-music3.mp3',
+      'stalker-music4.mp3','stalker-music5.mp3','stalker-music6.mp3',
+      'stalker-music7.mp3','stalker-music8.mp3','stalker-music9.mp3','stalker-music10.mp3'
+    ];
+    let musicIndex = 0;
+    bgMusic.src = musicList[musicIndex];
+    bgMusic.volume = 0.005;
+
+    document.addEventListener("click", () => { if (bgMusic.paused) bgMusic.play(); }, { once: true });
+
+    bgMusic.addEventListener('ended', () => {
+      musicIndex = (musicIndex + 1) % musicList.length;
+      bgMusic.src = musicList[musicIndex];
+      bgMusic.load();
+      bgMusic.play();
+    });
+
+    volumeControl.addEventListener("input", () => { bgMusic.volume = parseFloat(volumeControl.value) || 0; if (bgMusic.paused) bgMusic.play(); });
+
+    // -------------------- СОХРАНЕНИЕ И ВОССТАНОВЛЕНИЕ --------------------
+    questions.forEach(q => {
+      const id = q.dataset.id;
+      const saved = localStorage.getItem(`answer_${id}`);
+      if (saved) q.querySelector("textarea").value = saved;
+    });
+
+    function saveAnswers() {
+      questions.forEach(q => {
+        const id = q.dataset.id;
+        const answer = q.querySelector("textarea").value;
+        if (answer.trim()) localStorage.setItem(`answer_${id}`, answer);
+        else localStorage.removeItem(`answer_${id}`);
+      });
+    }
+
+    clearBtn.addEventListener("click", () => {
+      questions.forEach(q => q.querySelector("textarea").value = "");
+      Object.keys(localStorage).forEach(key => { if (key.startsWith("answer_")) localStorage.removeItem(key); });
+      resultDiv.innerText = "";
+    });
+
+    // -------------------- АНАЛИЗ --------------------
+    submitBtn.addEventListener("click", async () => {
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Анализируем...";
+      saveAnswers();
+
+      let combinedText = "";
+      questions.forEach(q => {
+        combinedText += `${q.querySelector("label").innerText}\nОтвет: ${q.querySelector("textarea").value || "не отвечено"}\n\n`;
+      });
+
+      try {
+        const res = await fetch("/api/analyze.js", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ answer: combinedText })
+        });
+
+        const data = await res.json();
+        resultDiv.innerText = data.analysis || "Пустой ответ от сервера.";
+      } catch (err) {
+        console.error(err);
+        resultDiv.innerText = "Ошибка при анализе.";
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Анализировать";
+      }
+    });
+
+    // -------------------- DOCX --------------------
+    const REPORT_TITLE = "ПСИХОПРОФИЛЬ";
+    const PROJECT_NAME = "ПСИХОПРОФИЛЬ";
+    const CONTACTS_LINE = "Контакты для связи: p.s.i.h.o_t.e.s.t@bk.ru";
+    const COPYRIGHT_LINE = "© P.S.I.H.O.T.E.S.T, 2025";
+
+    function parseSectionsFromAnalysis(text) {
+      const headings = [
+        "Личностный профиль","Эмоциональная стабильность","Особенности общения",
+        "Мотивация","Сильные стороны","Зоны возможных трудностей",
+        "Рекомендации для развития","Уточняющие гипотезы и вопросы","Заключение","Данные отсутствуют"
+      ];
+      const sections = {};
+      headings.forEach(h => sections[h] = "");
+      const lines = text.split(/\r?\n/);
+      let currentHeading = "Личностный профиль";
+      lines.forEach(line => {
+        const trim = line.trim();
+        if (headings.includes(trim)) currentHeading = trim;
+        else if (trim.length) sections[currentHeading] += trim + "\n";
+      });
+      return sections;
+    }
+
+    async function createAndDownloadReportDOCX(analysisText) {
+      if (!window.docx) { alert("Добавь библиотеку docx в head."); return; }
+      const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Table, TableRow, TableCell, WidthType, Footer } = window.docx;
+
+      const doc = new Document({ styles: { paragraphStyles: [{ id: "NormalText", name:"Normal Text", basedOn:"Normal", run:{size:24} }] } });
+      const dateStr = new Date().toLocaleDateString("ru-RU");
+
+      // Титульный лист
+      doc.addSection({ properties:{}, children:[
+        new Paragraph({ children:[new TextRun({ text: PROJECT_NAME, bold:true, size:48 })], alignment:AlignmentType.CENTER }),
+        new Paragraph({ children:[new TextRun({ text: REPORT_TITLE, bold:true, size:40 })], alignment:AlignmentType.CENTER }),
+        new Paragraph({ children:[new TextRun({ text:`Дата: ${dateStr}`, size:20 })], alignment:AlignmentType.CENTER }),
+        new Paragraph({ children:[new TextRun({ text: CONTACTS_LINE, italics:true, size:18 })], alignment:AlignmentType.CENTER }),
+        new Paragraph({ children:[new TextRun({ text: COPYRIGHT_LINE, size:14 })], alignment:AlignmentType.CENTER })
+      ]});
+
+      const sections = parseSectionsFromAnalysis(analysisText);
+
+      const tableRows = [new TableRow({ children:[
+        new TableCell({ children:[new Paragraph({ children:[new TextRun({ text:"Раздел", bold:true })] })] }),
+        new TableCell({ children:[new Paragraph({ children:[new TextRun({ text:"Краткое содержание", bold:true })] })] })
+      ]})];
+
+      const order = [
+        "Личностный профиль","Эмоциональная стабильность","Особенности общения",
+        "Мотивация","Сильные стороны","Зоны возможных трудностей",
+        "Рекомендации для развития","Уточняющие гипотезы и вопросы","Заключение"
+      ];
+
+      order.forEach(key => {
+        const txt = (sections[key] || "").replace(/\s+/g," ").trim();
+        const short = txt ? (txt.length>180? txt.slice(0,180)+"…": txt) : "—";
+        tableRows.push(new TableRow({ children:[
+          new TableCell({ children:[new Paragraph({ children:[new TextRun({ text:key })] })] }),
+          new TableCell({ children:[new Paragraph({ children:[new TextRun({ text:short })] })] })
+        ]}));
+      });
+
+      const sectionChildren = [];
+      sectionChildren.push(new Paragraph({ text:"Краткое содержание по разделам", heading:HeadingLevel.HEADING_2 }));
+      sectionChildren.push(new Table({ rows:tableRows, width:{ size:100, type:WidthType.PERCENTAGE } }));
+
+      order.forEach(key => {
+        const body = (sections[key] || "").trim();
+        if (!body) return;
+        sectionChildren.push(new Paragraph({ text:key, heading:HeadingLevel.HEADING_2 }));
+        const paras = body.split(/\n{1,}/).map(p=>p.trim()).filter(p=>p.length>0);
+        paras.forEach(p => sectionChildren.push(new Paragraph({ children:[new TextRun({ text:p, size:24 })] })));
+      });
+
+      doc.addSection({
+        properties:{},
+        footers:{ default: new Footer({ children:[
+          new Paragraph({ children:[new TextRun({ text: CONTACTS_LINE, size:18 })], alignment: AlignmentType.CENTER }),
+          new Paragraph({ children:[new TextRun({ text: COPYRIGHT_LINE, size:18 })], alignment: AlignmentType.CENTER })
+        ]})},
+        children: sectionChildren
+      });
+
+      const blob = await Packer.toBlob(doc);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Psychoprofile_${new Date().toISOString().slice(0,10)}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // -------------------- Кнопка скачать --------------------
+    const officialDownloadBtn = document.createElement("button");
+    officialDownloadBtn.innerText = "Скачать официальный отчёт (.docx)";
+    officialDownloadBtn.style.cssText = "background:#2b3b4d;color:#fff;border-radius:10px;padding:0.6rem 1rem;cursor:pointer;font-weight:600;margin-left:6px";
+    document.querySelector(".buttons").appendChild(officialDownloadBtn);
+
+    officialDownloadBtn.addEventListener("click", async () => {
+      const text = resultDiv.innerText || "";
+      if (!text || text.trim().length<5) { alert("Сначала получите результат анализа (нажмите «Анализировать»)."); return; }
+      try { await createAndDownloadReportDOCX(text); }
+      catch(err){ console.error("Ошибка генерации DOCX:",err); alert("Ошибка при создании документа. Посмотри в консоли."); }
+    });
+  </script>
 </body>
 </html>
