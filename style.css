@@ -12,12 +12,12 @@ body {
   background-size: cover;
   color: #eee;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
+  justify-content: center;
+  align-items: flex-start;
   min-height: 100vh;
   padding: 40px 15px;
   position: relative;
+  overflow-x: hidden; /* Убираем горизонтальный скролл */
 }
 
 /* Темный overlay */
@@ -49,9 +49,9 @@ body::before {
 
 /* Музыка */
 .music-control {
-  position: fixed; /* закрепляем в окне */
-  top: 15px;       /* отступ сверху */
-  right: 15px;     /* отступ справа */
+  position: fixed;
+  top: 15px;
+  right: 15px;
   background: rgba(50,50,50,0.8);
   padding: 10px 15px;
   border-radius: 12px;
@@ -62,8 +62,7 @@ body::before {
 }
 
 .music-control input[type="range"] {
-  width: 100px; /* длина ползунка */
-  cursor: pointer;
+  width: 100px;
 }
 
 /* Основной контейнер */
@@ -77,6 +76,7 @@ body::before {
   position: relative;
   z-index: 2;
   margin: 20px auto;
+  box-sizing: border-box; /* учитываем padding в ширине */
 }
 
 /* Заголовок */
@@ -97,9 +97,20 @@ h1 {
   margin-bottom: 16px;
 }
 
+/* Метки вопросов */
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #eee;
+  font-size: 15px;
+}
+
 /* Поле ответа */
 textarea {
-  width: 95%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box; /* padding и border не увеличивают ширину */
   padding: 0.6rem;
   border-radius: 10px;
   border: 1px solid #888;
@@ -107,12 +118,18 @@ textarea {
   color: #eee;
   resize: vertical;
   min-height: 80px;
-  margin: auto;
   display: block;
+  margin: auto;
 }
 
 /* Кнопки */
-.buttons { display: flex; gap: 0.8rem; margin-top: 1rem; }
+.buttons {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
 button {
   flex: 1;
   padding: 0.7rem 1rem;
@@ -122,10 +139,15 @@ button {
   color: #fff;
   font-weight: 600;
   cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.3s;
 }
-button:hover { transform: scale(1.03); }
 
-/* Результат */
+button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 12px rgba(107,33,168,0.4);
+}
+
+/* Результат анализа */
 #result {
   margin-top: 20px;
   padding: 16px;
@@ -137,17 +159,24 @@ button:hover { transform: scale(1.03); }
 
 /* Подвал */
 .footer {
-  background: rgba(0,0,0,0.75);
+  background: rgba(0,0,0,0.65);
   text-align: center;
   padding: 20px;
   border-top: 1px solid rgba(255,255,255,0.2);
-  width: 100%;
-  position: relative;
-  bottom: 0;
+  margin-top: 25px;
+  border-radius: 6px;
   z-index: 3;
-  font-size: 14px;
+  position: relative;
 }
-.footer a { color: #ffcc00; }
+
+.footer a {
+  color: #ffcc00;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
 
 /* Адаптив */
 @media (max-width: 600px) {
