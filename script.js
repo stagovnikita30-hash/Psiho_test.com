@@ -17,7 +17,7 @@ document.addEventListener("click", () => {
 
 // Управление громкостью с диапазоном 0 - 3%
 volumeControl.addEventListener("input", () => {
-  bgMusic.volume = parseFloat(volumeControl.value); // напрямую соответствует ползунку
+  bgMusic.volume = parseFloat(volumeControl.value); // весь ползунок = 1%
   if (bgMusic.paused) bgMusic.play();
 });
 
