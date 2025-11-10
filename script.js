@@ -3,7 +3,7 @@ const clearBtn = document.getElementById("clearBtn");
 const resultDiv = document.getElementById("result");
 const questions = document.querySelectorAll(".question");
 
-// Музыка
+// -------------------- МУЗЫКА --------------------
 const bgMusic = document.getElementById("bgMusic");
 const volumeControl = document.getElementById("volumeControl");
 
@@ -22,9 +22,10 @@ const musicList = [
 ];
 let musicIndex = 0;
 
-// Первый трек
+// Настройки аудио
+bgMusic.loop = false; // отключаем повтор текущего трека
 bgMusic.src = musicList[musicIndex];
-bgMusic.volume = 0.005;
+bgMusic.volume = 0.005; // 0.5%
 
 // Включаем музыку после первого клика
 document.addEventListener("click", () => {
@@ -35,6 +36,7 @@ document.addEventListener("click", () => {
 bgMusic.addEventListener('ended', () => {
   musicIndex = (musicIndex + 1) % musicList.length;
   bgMusic.src = musicList[musicIndex];
+  bgMusic.load(); // подгружаем новый трек
   bgMusic.play();
 });
 
@@ -44,14 +46,13 @@ volumeControl.addEventListener("input", () => {
   if (bgMusic.paused) bgMusic.play();
 });
 
-// Восстановление сохранённых ответов
+// -------------------- ОТНОВОЕ ВОССТАНОВЛЕНИЕ И СОХРАНЕНИЕ ОТВЕТОВ --------------------
 questions.forEach(q => {
   const id = q.dataset.id;
   const saved = localStorage.getItem(`answer_${id}`);
   if (saved) q.querySelector("textarea").value = saved;
 });
 
-// Сохранение ответов
 function saveAnswers() {
   questions.forEach(q => {
     const id = q.dataset.id;
@@ -73,7 +74,7 @@ clearBtn.addEventListener("click", () => {
   resultDiv.innerText = "";
 });
 
-// Анализ
+// -------------------- АНАЛИЗ --------------------
 submitBtn.addEventListener("click", async () => {
   submitBtn.disabled = true;
   submitBtn.innerText = "Анализируем...";
@@ -102,7 +103,7 @@ submitBtn.addEventListener("click", async () => {
   }
 });
 
-// Плавное слайдшоу фонов
+// -------------------- СЛАЙДШОУ ФОНА --------------------
 const backgrounds = [
   'stalker-bg1.jpg',
   'stalker-bg2.jpg',
@@ -118,40 +119,15 @@ const backgrounds = [
 
 let currentBg = 0;
 
-// Создаём два слоя для плавного перехода
-const bgLayer1 = document.createElement('div');
-const bgLayer2 = document.createElement('div');
-
-[bgLayer1, bgLayer2].forEach(layer => {
-  layer.style.position = 'fixed';
-  layer.style.top = 0;
-  layer.style.left = 0;
-  layer.style.width = '100%';
-  layer.style.height = '100%';
-  layer.style.backgroundSize = 'cover';
-  layer.style.backgroundPosition = 'center';
-  layer.style.transition = 'opacity 2s ease-in-out';
-  layer.style.zIndex = -1;
-  document.body.appendChild(layer);
+// Предзагрузка изображений, чтобы первый фон не появлялся с задержкой
+backgrounds.forEach(src => {
+  const img = new Image();
+  img.src = src;
 });
-
-bgLayer1.style.backgroundImage = `url('${backgrounds[currentBg]}')`;
-bgLayer1.style.opacity = 1;
-bgLayer2.style.opacity = 0;
-
-let showingLayer1 = true;
 
 function changeBackground() {
   currentBg = (currentBg + 1) % backgrounds.length;
-  const nextLayer = showingLayer1 ? bgLayer2 : bgLayer1;
-  nextLayer.style.backgroundImage = `url('${backgrounds[currentBg]}')`;
-  nextLayer.style.opacity = 1;
-
-  const prevLayer = showingLayer1 ? bgLayer1 : bgLayer2;
-  prevLayer.style.opacity = 0;
-
-  showingLayer1 = !showingLayer1;
+  document.body.style.backgroundImage = `url('${backgrounds[currentBg]}')`;
 }
 
-// Смена каждые 60 секунд
-setInterval(changeBackground, 60000);
+setInterval(changeBackground, 60000); // смена каждые 60 секунд
